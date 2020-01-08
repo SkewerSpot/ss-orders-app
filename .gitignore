@@ -38,3 +38,13 @@ lib/generated_plugin_registrant.dart
 
 # Firebase-related
 android/app/google-services.json
+
+# Android related
+**/android/.project
+**/android/.settings/org.eclipse.buildship.core.prefs
+**/android/app/.classpath
+**/android/app/.project
+**/android/app/.settings/org.eclipse.buildship.core.prefs
+
+# VS Code
+.vscode/
