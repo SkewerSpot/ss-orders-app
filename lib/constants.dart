@@ -14,3 +14,8 @@ const TextStyle kHeadingStyle = TextStyle(
 const TextStyle kSubHeadingStyle = TextStyle(
   fontSize: 18.0,
 );
+
+// Tax rates
+const double kTaxRateCGST = 0.025;
+const double kTaxRateSGST = 0.025;
+const double kTaxRateGST = 0.05;
