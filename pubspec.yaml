@@ -3,7 +3,7 @@ description: Manage orders received from SS Menu app
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.2.2 <3.0.0'
 
 dependencies:
   flutter:
@@ -24,7 +24,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon-2000x2000.png"
+  image_path: 'assets/icon-2000x2000.png'
 
 flutter:
   uses-material-design: true
