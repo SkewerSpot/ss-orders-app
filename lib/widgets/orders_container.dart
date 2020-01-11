@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/firebase_service.dart';
+import 'package:ss_orders/models/app_state.dart';
+import 'package:ss_orders/models/customer_order.dart';
+
+import 'order_card.dart';
 
 /// A container for multiple [OrderItemCard]s.
 ///
@@ -7,6 +13,8 @@ import 'package:ss_orders/constants.dart';
 class OrdersContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+
     return Container(
       padding: EdgeInsets.only(
         top: 10.0,
@@ -20,10 +28,21 @@ class OrdersContainer extends StatelessWidget {
           topRight: Radius.circular(30.0),
         ),
       ),
-      child: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, itemIndex) {
-          return Text('Hello, friend');
+      child: StreamBuilder<List<CustomerOrder>>(
+        stream: appState.selectedTab == 'open'
+            ? FirebaseService.getOpenOrders()
+            : FirebaseService.getClosedOrders(),
+        builder: (context, snapshot) {
+          List<Widget> listViewChildren = [];
+
+          if (snapshot.data != null) {
+            listViewChildren =
+                snapshot.data.map((order) => OrderCard(order: order)).toList();
+          }
+
+          return ListView(
+            children: listViewChildren,
+          );
         },
       ),
     );
