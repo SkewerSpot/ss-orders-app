@@ -1,23 +1,37 @@
 import 'package:flutter/foundation.dart';
-import 'menu_item.dart';
-import 'menu_item_type.dart';
+import 'item_type.dart';
 
-/// Data class to represent item in cart.
-///
-/// A [MenuItem] is ideally converted to an [OrderItem]
-/// when adding item from menu to cart.
-class OrderItem extends MenuItem {
+/// Data class to represent item in [CustomerOrder].
+class OrderItem {
+  /// Name of the item.
+  final String name;
+
+  /// Category the item belongs to.
+  String category;
+
+  /// Whether the item is non-vegetarian or vegetarian.
+  bool isNonVeg;
+
+  /// Price of item.
+  final double price;
+
+  /// List of supported syrups or sauces.
+  List<String> syrups;
+
+  /// List of supported toppings.
+  List<String> toppings;
+
   /// Sequence number of item in its category.
   final int sequenceNum;
 
   /// A [MenuItem] may have multiple types/variants.
   /// This prop holds the user-selected type.
-  final MenuItemType selectedType;
+  ItemType selectedType;
 
   /// *DEPRECATED* Not in use.
   ///
   /// Whether the item is to be complimented with an ice cream scoop.
-  final bool withIceCream;
+  bool withIceCream;
 
   /// Whether the item has been prepared.
   ///
@@ -28,36 +42,17 @@ class OrderItem extends MenuItem {
   final bool isDone;
 
   OrderItem({
-    @required String name,
-    @required String category,
-    @required bool isNonVeg,
-    double price,
-    List<MenuItemType> types,
-    String imagePath,
-    String description,
-    List<String> syrups,
-    List<String> toppings,
-    int freeSyrups,
-    int freeToppings,
-    List<String> inclusions,
+    @required this.name,
+    this.category = '',
+    this.isNonVeg = false,
+    @required this.price,
+    this.syrups,
+    this.toppings,
     this.sequenceNum = 0,
     this.selectedType,
     this.withIceCream = false,
     this.isDone = false,
-  }) : super(
-          name: name,
-          category: category,
-          isNonVeg: isNonVeg,
-          price: price,
-          types: types,
-          imagePath: imagePath,
-          description: description,
-          syrups: syrups,
-          toppings: toppings,
-          freeSyrups: freeSyrups,
-          freeToppings: freeToppings,
-          inclusions: inclusions,
-        );
+  });
 
   /// Returns a [Map] representation of the object,
   /// that can be used as a serialized form for sending to Firebase.
@@ -67,14 +62,8 @@ class OrderItem extends MenuItem {
       'category': this.category,
       'isNonVeg': this.isNonVeg,
       'price': this.price,
-      'types': this.types != null
-          ? this.types.map<Map>((type) => type.toMap()).toList()
-          : null,
-      'imagePath': this.imagePath,
-      'description': this.description,
       'syrups': this.syrups,
       'toppings': this.toppings,
-      'inclusions': this.inclusions,
       'sequenceNum': this.sequenceNum,
       'selectedType':
           this.selectedType != null ? this.selectedType.toMap() : null,

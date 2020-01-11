@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 /// For example, sizes of a pizza,
 /// quantity (half or full) of an Indian curry,
 /// types of a waffle (square, stick, large, small), etc.
-class MenuItemType {
+class ItemType {
   /// Name of the variant.
   final String name;
 
@@ -17,7 +17,7 @@ class MenuItemType {
   /// For example, "30 more than the base price."
   final double price;
 
-  MenuItemType({@required this.name, @required this.price});
+  ItemType({@required this.name, @required this.price});
 
   /// Returns a [Map] representation of the object,
   /// that can be used as a serialized form for sending to Firebase.
