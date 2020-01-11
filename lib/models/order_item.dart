@@ -54,6 +54,25 @@ class OrderItem {
     this.isDone = false,
   });
 
+  /// Returns a deserialized instance of [OrderItem] from a Map.
+  /// Useful for reading data from JSON or Firebase.
+  factory OrderItem.fromMap(Map data) {
+    data = data ?? {};
+
+    return OrderItem(
+      name: data['name'] ?? '',
+      category: data['category'] ?? '',
+      isNonVeg: data['isNonVeg'] ?? false,
+      price: data['price'] ?? 0.0,
+      syrups: data['syrups'],
+      toppings: data['toppings'],
+      sequenceNum: data['sequenceNum'] ?? 0,
+      selectedType: ItemType.fromMap(data['selectedType']),
+      withIceCream: data['withIceCream'] ?? false,
+      isDone: data['isDone'] ?? false,
+    );
+  }
+
   /// Returns a [Map] representation of the object,
   /// that can be used as a serialized form for sending to Firebase.
   Map<String, dynamic> toMap() {

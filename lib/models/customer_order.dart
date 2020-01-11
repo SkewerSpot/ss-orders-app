@@ -123,6 +123,41 @@ class CustomerOrder {
     @required this.source,
   });
 
+  /// Returns a deserialized instance of [CustomerOrder] from a Map.
+  /// Useful for reading data from JSON or Firebase.
+  factory CustomerOrder.fromMap(Map data) {
+    data = data ?? {};
+
+    return CustomerOrder(
+      orderId: data['orderId'] ?? '',
+      customerName: data['customerName'],
+      customerMobile: data['customerMobile'],
+      customerCarNum: data['customerCarNum'],
+      customerCarMake: data['customerCarMake'],
+      customerComments: data['customerComments'],
+      orderItems: data['orderItems']
+          ? (data['orderItems'] as List<Map>)
+              .map((itemMap) => OrderItem.fromMap(itemMap))
+          : [],
+      token: data['token'] ?? '',
+      timeOfDay: data['timeOfDay'],
+      isPaidFor: data['isPaidFor'] ?? false,
+      isCompleted: data['isCompleted'] ?? false,
+      isReceiptIssued: data['isReceiptIssued'] ?? false,
+      timestamp: data['timestamp'] ?? '',
+      completedTimestamp: data['completedTimestamp'] ?? '',
+      isCancelled: data['isCancelled'] ?? false,
+      isDiscounted: data['isDiscounted'] ?? false,
+      discountAmount: data['discountAmount'] ?? 0.0,
+      channel: data['channel'] ?? '',
+      taxRateCGST: data['taxRateCGST'] ?? kTaxRateCGST,
+      taxRateSGST: data['taxRateSGST'] ?? kTaxRateSGST,
+      taxRateGST: data['taxRateGST'] ?? kTaxRateGST,
+      isInclusiveOfTaxes: data['isInclusiveOfTaxes'] ?? false,
+      source: data['source'] ?? '',
+    );
+  }
+
   /// Returns a [Map] representation of the object,
   /// that can be used as a serialized form for sending to Firebase.
   Map<String, dynamic> toMap() {

@@ -19,6 +19,17 @@ class ItemType {
 
   ItemType({@required this.name, @required this.price});
 
+  /// Returns a deserialized instance of [ItemType] from a Map.
+  /// Useful for reading data from JSON or Firebase.
+  factory ItemType.fromMap(Map data) {
+    data = data ?? {};
+
+    return ItemType(
+      name: data['name'] ?? '',
+      price: data['price'] ?? 0.0,
+    );
+  }
+
   /// Returns a [Map] representation of the object,
   /// that can be used as a serialized form for sending to Firebase.
   Map<String, dynamic> toMap() {
