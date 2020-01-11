@@ -19,3 +19,9 @@ const TextStyle kSubHeadingStyle = TextStyle(
 const double kTaxRateCGST = 0.025;
 const double kTaxRateSGST = 0.025;
 const double kTaxRateGST = 0.05;
+
+// Order views
+Map<String, String> kOrdersViewTypes = {
+  'open': 'Open',
+  'closed': 'Closed',
+};
