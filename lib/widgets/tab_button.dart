@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/models/app_state.dart';
 
 class TabButton extends StatelessWidget {
   final String id;
@@ -9,10 +11,13 @@ class TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isActive = false;
+    var appState = Provider.of<AppState>(context);
+    bool isActive = appState.selectedTab == this.id;
 
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        appState.setTab(this.id);
+      },
       child: Column(
         children: <Widget>[
           Text(
