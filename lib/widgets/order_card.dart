@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/util.dart';
@@ -5,18 +7,39 @@ import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
 
 /// Visual representation of a [CustomerOrder].
-class OrderCard extends StatelessWidget {
+class OrderCard extends StatefulWidget {
   final CustomerOrder order;
 
   OrderCard({@required this.order});
 
   @override
-  Widget build(BuildContext context) {
-    String minsAgo = DateTime.now()
-        .difference(DateTime.parse(order.timestamp))
+  _OrderCardState createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  String _minsAgo;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _minsAgo = DateTime.now()
+        .difference(DateTime.parse(widget.order.timestamp))
         .inMinutes
         .toString();
 
+    Timer.periodic(Duration(minutes: 1), (Timer t) {
+      setState(() {
+        _minsAgo = DateTime.now()
+            .difference(DateTime.parse(widget.order.timestamp))
+            .inMinutes
+            .toString();
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -32,7 +55,7 @@ class OrderCard extends StatelessWidget {
             children: <Widget>[
               // TOKEN NO.
               Text(
-                'Token ${order.token.toString()}',
+                'Token ${widget.order.token.toString()}',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -40,7 +63,7 @@ class OrderCard extends StatelessWidget {
               ),
               SizedBox(width: 5.0),
               // TIME AGO
-              Text('${minsAgo}m ago'),
+              Text('${this._minsAgo}m ago'),
             ],
           ),
           SizedBox(height: 5.0),
@@ -61,43 +84,47 @@ class OrderCard extends StatelessWidget {
                     Wrap(
                       children: <Widget>[
                         Text(
-                          '${order.channel}',
+                          '${widget.order.channel}',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Visibility(
-                          visible: !Util.isEmptyOrNull(order.customerName),
+                          visible:
+                              !Util.isEmptyOrNull(widget.order.customerName),
                           child: Text(
-                            ' • ${order.customerName}',
+                            ' • ${widget.order.customerName}',
                             style: TextStyle(
                               color: kThemeColorWhite,
                             ),
                           ),
                         ),
                         Visibility(
-                          visible: !Util.isEmptyOrNull(order.customerCarMake),
+                          visible:
+                              !Util.isEmptyOrNull(widget.order.customerCarMake),
                           child: Text(
-                            ' • ${order.customerCarMake}',
+                            ' • ${widget.order.customerCarMake}',
                             style: TextStyle(
                               color: kThemeColorWhite,
                             ),
                           ),
                         ),
                         Visibility(
-                          visible: !Util.isEmptyOrNull(order.customerCarNum),
+                          visible:
+                              !Util.isEmptyOrNull(widget.order.customerCarNum),
                           child: Text(
-                            ' • ${order.customerCarNum}',
+                            ' • ${widget.order.customerCarNum}',
                             style: TextStyle(
                               color: kThemeColorWhite,
                             ),
                           ),
                         ),
                         Visibility(
-                          visible: !Util.isEmptyOrNull(order.customerComments),
+                          visible: !Util.isEmptyOrNull(
+                              widget.order.customerComments),
                           child: Text(
-                            ' • ${order.customerComments}',
+                            ' • ${widget.order.customerComments}',
                             style: TextStyle(
                               color: kThemeColorWhite,
                             ),
@@ -109,7 +136,7 @@ class OrderCard extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                          '₹${order.totalReceivableCost().toStringAsFixed(2)}',
+                          '₹${widget.order.totalReceivableCost().toStringAsFixed(2)}',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontWeight: FontWeight.bold,
@@ -119,16 +146,16 @@ class OrderCard extends StatelessWidget {
                           width: 10.0,
                         ),
                         Text(
-                          '₹${order.totalCost().toStringAsFixed(2)} total',
+                          '₹${widget.order.totalCost().toStringAsFixed(2)} total',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontSize: 12.0,
                           ),
                         ),
                         Visibility(
-                          visible: order.discountAmount > 0,
+                          visible: widget.order.discountAmount > 0,
                           child: Text(
-                            ' - ₹${order.discountAmount.toStringAsFixed(2)} off',
+                            ' - ₹${widget.order.discountAmount.toStringAsFixed(2)} off',
                             style: TextStyle(
                               color: kThemeColorWhite,
                               fontSize: 12.0,
@@ -136,7 +163,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          ' + ₹${order.totalTax().toStringAsFixed(2)} tax',
+                          ' + ₹${widget.order.totalTax().toStringAsFixed(2)} tax',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontSize: 12.0,
@@ -150,7 +177,7 @@ class OrderCard extends StatelessWidget {
             ),
           ),
           // ITEMS
-          ...order.orderItems
+          ...widget.order.orderItems
               .map((item) => Padding(
                     padding: EdgeInsets.symmetric(vertical: 5.0),
                     child: OrderItemCard(item: item),
