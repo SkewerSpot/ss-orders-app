@@ -190,4 +190,34 @@ class CustomerOrder {
       'source': this.source,
     };
   }
+
+  /// Returns the sum total of prices of all items in the order.
+  /// Total value may be less than sum if order is inclusive of taxes.
+  double totalCost() {
+    double total = this
+        .orderItems
+        .map<double>((item) => item.price)
+        .reduce((sum, currentPrice) => sum + currentPrice);
+
+    if (this.isInclusiveOfTaxes) {
+      total /= (1 + this.taxRateGST);
+    }
+
+    return total;
+  }
+
+  /// Returns the total amount of tax to be levied.
+  double totalTax() {
+    double taxableCost = this.totalCost() - this.discountAmount;
+    double tax =
+        (taxableCost * this.taxRateCGST) + (taxableCost * this.taxRateSGST);
+    return tax;
+  }
+
+  /// Return the amount to be collected for this order from customer.
+  ///
+  /// Formula: receivable cost = total cost - discount + tax
+  double totalReceivableCost() {
+    return this.totalCost() - this.discountAmount + this.totalTax();
+  }
 }
