@@ -26,7 +26,9 @@ class ItemType {
 
     return ItemType(
       name: data['name'] ?? '',
-      price: data['price'] ?? 0.0,
+      price: data['price'] is double
+          ? data['price']
+          : data['price'] is int ? (data['price'] as int).toDouble() : 0.0,
     );
   }
 

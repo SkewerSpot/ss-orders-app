@@ -63,9 +63,15 @@ class OrderItem {
       name: data['name'] ?? '',
       category: data['category'] ?? '',
       isNonVeg: data['isNonVeg'] ?? false,
-      price: data['price'] ?? 0.0,
-      syrups: data['syrups'],
-      toppings: data['toppings'],
+      price: data['price'] is double
+          ? data['price']
+          : data['price'] is int ? (data['price'] as int).toDouble() : 0.0,
+      syrups: data['syrups'] is List
+          ? (data['syrups'] as List).map((s) => s.toString()).toList()
+          : [],
+      toppings: data['toppings'] is List
+          ? (data['toppings'] as List).map((t) => t.toString()).toList()
+          : [],
       sequenceNum: data['sequenceNum'] ?? 0,
       selectedType: ItemType.fromMap(data['selectedType']),
       withIceCream: data['withIceCream'] ?? false,

@@ -135,9 +135,10 @@ class CustomerOrder {
       customerCarNum: data['customerCarNum'],
       customerCarMake: data['customerCarMake'],
       customerComments: data['customerComments'],
-      orderItems: data['orderItems']
-          ? (data['orderItems'] as List<Map>)
+      orderItems: data['orderItems'] != null
+          ? (data['orderItems'] as List)
               .map((itemMap) => OrderItem.fromMap(itemMap))
+              .toList()
           : [],
       token: data['token'] ?? '',
       timeOfDay: data['timeOfDay'],
@@ -148,7 +149,9 @@ class CustomerOrder {
       completedTimestamp: data['completedTimestamp'] ?? '',
       isCancelled: data['isCancelled'] ?? false,
       isDiscounted: data['isDiscounted'] ?? false,
-      discountAmount: data['discountAmount'] ?? 0.0,
+      discountAmount: data['discountAmount'] is String
+          ? double.parse(data['discountAmount'])
+          : 0.0,
       channel: data['channel'] ?? '',
       taxRateCGST: data['taxRateCGST'] ?? kTaxRateCGST,
       taxRateSGST: data['taxRateSGST'] ?? kTaxRateSGST,
