@@ -27,18 +27,11 @@ class OrdersTabView extends StatelessWidget {
                 horizontal: 20.0,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  TabButton(
-                    id: 'open',
-                    text: 'Open',
-                  ),
-                  TabButton(
-                    id: 'closed',
-                    text: 'Closed',
-                  ),
-                ],
-              ),
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: kOrdersViewTypes.keys
+                      .map<TabButton>((key) =>
+                          TabButton(id: key, text: kOrdersViewTypes[key]))
+                      .toList()),
             ),
             Expanded(
               child: OrdersContainer(),
