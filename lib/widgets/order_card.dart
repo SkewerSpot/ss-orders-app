@@ -68,7 +68,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Visibility(
-                          visible: !['', null].contains(order.customerName),
+                          visible: !Util.isEmptyOrNull(order.customerName),
                           child: Text(
                             ' • ${order.customerName}',
                             style: TextStyle(
@@ -77,7 +77,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Visibility(
-                          visible: !['', null].contains(order.customerCarMake),
+                          visible: !Util.isEmptyOrNull(order.customerCarMake),
                           child: Text(
                             ' • ${order.customerCarMake}',
                             style: TextStyle(
@@ -86,7 +86,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Visibility(
-                          visible: !['', null].contains(order.customerCarNum),
+                          visible: !Util.isEmptyOrNull(order.customerCarNum),
                           child: Text(
                             ' • ${order.customerCarNum}',
                             style: TextStyle(
@@ -95,7 +95,7 @@ class OrderCard extends StatelessWidget {
                           ),
                         ),
                         Visibility(
-                          visible: !['', null].contains(order.customerComments),
+                          visible: !Util.isEmptyOrNull(order.customerComments),
                           child: Text(
                             ' • ${order.customerComments}',
                             style: TextStyle(
@@ -109,7 +109,7 @@ class OrderCard extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Text(
-                          '₹${'000'}',
+                          '₹${order.totalReceivableCost().toStringAsFixed(2)}',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontWeight: FontWeight.bold,
@@ -119,9 +119,24 @@ class OrderCard extends StatelessWidget {
                           width: 10.0,
                         ),
                         Text(
-                          '₹${'000'} total - ' +
-                              '₹${'000'} off + ' +
-                              '₹${'000'} tax',
+                          '₹${order.totalCost().toStringAsFixed(2)} total',
+                          style: TextStyle(
+                            color: kThemeColorWhite,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                        Visibility(
+                          visible: order.discountAmount > 0,
+                          child: Text(
+                            ' - ₹${order.discountAmount.toStringAsFixed(2)} off',
+                            style: TextStyle(
+                              color: kThemeColorWhite,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          ' + ₹${order.totalTax().toStringAsFixed(2)} tax',
                           style: TextStyle(
                             color: kThemeColorWhite,
                             fontSize: 12.0,
