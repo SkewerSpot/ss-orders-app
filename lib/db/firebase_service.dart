@@ -52,4 +52,18 @@ class FirebaseService {
               return true;
             }).toList());
   }
+
+  /// Replaces an order at its Firebase path with given object.
+  ///
+  /// Returns true is successful, false otherwise.
+  static Future<bool> updateOpenOrder(CustomerOrder order) async {
+    try {
+      await _databaseRef
+          .child('open-orders/${order.orderId}')
+          .set(order.toMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
