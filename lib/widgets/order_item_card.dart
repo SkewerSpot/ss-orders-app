@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/models/order_item.dart';
 import 'package:ss_orders/widgets/addon_list.dart';
+import 'package:ss_orders/widgets/icon_action_buton.dart';
 
 /// Widget to display an [OrderItem].
 ///
@@ -65,22 +66,10 @@ class OrderItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                width: 35.0,
-                height: 35.0,
-                child: FlatButton(
-                  padding: EdgeInsets.all(0.0),
-                  color: Color(0xFFF6F8FC),
-                  child: Icon(
-                    Icons.check_box,
-                    size: 25.0,
-                    color: this.item.isDone ? Colors.green : Colors.grey,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(13.0),
-                  ),
-                  onPressed: this.isDoneButtonHandler,
-                ),
+              IconActionButton(
+                icon: Icons.check_box,
+                color: this.item.isDone ? Colors.green : Colors.grey,
+                onPressed: this.isDoneButtonHandler,
               ),
             ],
           ),

@@ -49,28 +49,28 @@ class CustomerOrder {
   final String timeOfDay;
 
   /// Whether payment (in any form) has been received for the order.
-  final bool isPaidFor;
+  bool isPaidFor;
 
   /// Whether the order has been payed for and delivered.
-  final bool isCompleted;
+  bool isCompleted;
 
   /// Whether a receipt was issued to the customer.
-  final bool isReceiptIssued;
+  bool isReceiptIssued;
 
   /// The exact date and time when order was marked completed.
   ///
   /// The difference between [timestamp] and [completedTimestamp]
   /// is used to calculate total order preparation time by Orders and Stats apps.
-  final String completedTimestamp;
+  String completedTimestamp;
 
   /// Whether the order stands cancelled (for whatever reason).
-  final bool isCancelled;
+  bool isCancelled;
 
   /// Whether a discount was applied to the order.
-  final bool isDiscounted;
+  bool isDiscounted;
 
   /// The discount amount applied to the order.
-  final double discountAmount;
+  double discountAmount;
 
   /// The channel from where the order was received.
   ///

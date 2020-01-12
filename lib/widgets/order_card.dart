@@ -5,6 +5,7 @@ import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
+import 'package:ss_orders/widgets/order_control_strip.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
 
 /// Visual representation of a [CustomerOrder].
@@ -189,6 +190,9 @@ class _OrderCardState extends State<OrderCard> {
                         }),
                   ))
               .toList(),
+
+          /// ACTION BUTTONS
+          OrderControlStrip(order: widget.order),
         ],
       ),
     );
