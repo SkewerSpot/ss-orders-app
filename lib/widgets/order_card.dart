@@ -20,6 +20,7 @@ class OrderCard extends StatefulWidget {
 
 class _OrderCardState extends State<OrderCard> {
   String _minsAgo;
+  Timer _timer;
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class _OrderCardState extends State<OrderCard> {
         .inMinutes
         .toString();
 
-    Timer.periodic(Duration(minutes: 1), (Timer t) {
+    this._timer = Timer.periodic(Duration(minutes: 1), (Timer t) {
       setState(() {
         _minsAgo = DateTime.now()
             .difference(DateTime.parse(widget.order.timestamp))
@@ -38,6 +39,12 @@ class _OrderCardState extends State<OrderCard> {
             .toString();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    this._timer.cancel();
+    super.dispose();
   }
 
   @override
