@@ -151,7 +151,9 @@ class CustomerOrder {
       isDiscounted: data['isDiscounted'] ?? false,
       discountAmount: data['discountAmount'] is String
           ? double.parse(data['discountAmount'])
-          : 0.0,
+          : data['discountAmount'] is int
+              ? (data['discountAmount'] as int).toDouble()
+              : 0.0,
       channel: data['channel'] ?? '',
       taxRateCGST: data['taxRateCGST'] ?? kTaxRateCGST,
       taxRateSGST: data['taxRateSGST'] ?? kTaxRateSGST,
