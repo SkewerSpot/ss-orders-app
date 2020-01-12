@@ -1,3 +1,4 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
@@ -7,7 +8,7 @@ import 'package:ss_orders/models/customer_order.dart';
 
 import 'order_card.dart';
 
-/// A container for multiple [OrderItemCard]s.
+/// A container for multiple [OrderCard]s.
 ///
 /// The parent widget to hold a list of orders (open or closed).
 class OrdersContainer extends StatelessWidget {
@@ -38,6 +39,14 @@ class OrdersContainer extends StatelessWidget {
           if (snapshot.data != null) {
             listViewChildren =
                 snapshot.data.map((order) => OrderCard(order: order)).toList();
+          }
+
+          if (appState.selectedTab == 'open') {
+            if (listViewChildren.length > appState.openOrdersCount) {
+              final player = AudioCache();
+              player.play('doorbell.wav');
+            }
+            appState.setOpenOrdersCount(listViewChildren.length);
           }
 
           return ListView(
