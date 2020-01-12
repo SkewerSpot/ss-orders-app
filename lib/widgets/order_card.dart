@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
@@ -180,7 +181,12 @@ class _OrderCardState extends State<OrderCard> {
           ...widget.order.orderItems
               .map((item) => Padding(
                     padding: EdgeInsets.symmetric(vertical: 5.0),
-                    child: OrderItemCard(item: item),
+                    child: OrderItemCard(
+                        item: item,
+                        isDoneButtonHandler: () {
+                          item.isDone = !item.isDone;
+                          FirebaseService.updateOpenOrder(widget.order);
+                        }),
                   ))
               .toList(),
         ],

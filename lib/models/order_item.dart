@@ -39,7 +39,7 @@ class OrderItem {
   /// the doneness of the whole order. [OrderItem]'s [isDone] prop
   /// represents the doneness of its item only.
   /// Useful to track the doneness of individual items in an order.
-  final bool isDone;
+  bool isDone;
 
   OrderItem({
     @required this.name,

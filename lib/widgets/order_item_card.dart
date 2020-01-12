@@ -10,10 +10,11 @@ class OrderItemCard extends StatelessWidget {
   /// The item to display in card.
   final OrderItem item;
 
-  OrderItemCard({
-    Key key,
-    @required this.item,
-  }) : super(key: key);
+  /// Handler for is-done button
+  final Function isDoneButtonHandler;
+
+  OrderItemCard({Key key, @required this.item, this.isDoneButtonHandler})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class OrderItemCard extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(13.0),
                   ),
-                  onPressed: () => {},
+                  onPressed: this.isDoneButtonHandler,
                 ),
               ),
             ],
