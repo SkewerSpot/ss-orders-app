@@ -22,7 +22,13 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.check_box,
             color: this.order.isCompleted ? Colors.green : Colors.grey,
-            onPressed: () {},
+            onPressed: () {
+              this.order.isCompleted = !this.order.isCompleted;
+              if (this.order.isCompleted)
+                FirebaseService.closeOrder(this.order);
+              else
+                FirebaseService.openOrder(this.order);
+            },
           ),
           SizedBox(
             width: 20.0,
@@ -30,7 +36,13 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.cancel,
             color: this.order.isCancelled ? Colors.red : Colors.grey,
-            onPressed: () {},
+            onPressed: () {
+              this.order.isCancelled = !this.order.isCancelled;
+              if (this.order.isCancelled)
+                FirebaseService.closeOrder(this.order);
+              else
+                FirebaseService.openOrder(this.order);
+            },
           ),
           SizedBox(
             width: 20.0,

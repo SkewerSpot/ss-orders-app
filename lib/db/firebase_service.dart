@@ -66,4 +66,49 @@ class FirebaseService {
       return false;
     }
   }
+
+  /// Moves the given order from "open orders"
+  /// to present day's collection.
+  ///
+  /// Once an order is closed, the UI doesn't allow to make
+  /// further amends to it. Closed orders may only be
+  /// reopened (`isCompleted == false`) or
+  /// uncancelled (`isCancelled == false`).
+  ///
+  /// Returns true if successful, false otherwise.
+  static Future<bool> closeOrder(CustomerOrder order) async {
+    try {
+      await _databaseRef
+          .child(
+              'orders/${Util.getYYYYMMDDDate(DateTime.now())}/${order.orderId}')
+          .set(order.toMap());
+      await _databaseRef.child('open-orders/${order.orderId}').remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Moves the given order from present day's collection
+  /// to "open orders".
+  ///
+  /// This method reverses the action performed by `closeOrder`.
+  /// At times it may be useful to reopen (`isCompleted == false`)
+  /// or uncancel (`isCancelled == false`) an order to make amends.
+  ///
+  /// Returns true if successful, false otherwise.
+  static Future<bool> openOrder(CustomerOrder order) async {
+    try {
+      await _databaseRef
+          .child('open-orders/${order.orderId}')
+          .set(order.toMap());
+      await _databaseRef
+          .child(
+              'orders/${Util.getYYYYMMDDDate(DateTime.now())}/${order.orderId}')
+          .remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
