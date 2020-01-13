@@ -24,13 +24,7 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.check_box,
             color: this.order.isCompleted ? Colors.green : Colors.grey,
-            onPressed: () {
-              this.order.isCompleted = !this.order.isCompleted;
-              if (this.order.isCompleted)
-                FirebaseService.closeOrder(this.order);
-              else
-                FirebaseService.openOrder(this.order);
-            },
+            onPressed: this._completeOrder,
           ),
           SizedBox(
             width: 20.0,
@@ -38,13 +32,7 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.cancel,
             color: this.order.isCancelled ? Colors.red : Colors.grey,
-            onPressed: () {
-              this.order.isCancelled = !this.order.isCancelled;
-              if (this.order.isCancelled)
-                FirebaseService.closeOrder(this.order);
-              else
-                FirebaseService.openOrder(this.order);
-            },
+            onPressed: this._cancelOrder,
           ),
           SizedBox(
             width: 20.0,
@@ -52,10 +40,7 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.monetization_on,
             color: this.order.isPaidFor ? Colors.blue : Colors.grey,
-            onPressed: () {
-              this.order.isPaidFor = !this.order.isPaidFor;
-              FirebaseService.updateOpenOrder(this.order);
-            },
+            onPressed: this._markOrderAsPaid,
           ),
           SizedBox(
             width: 20.0,
@@ -63,10 +48,7 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.receipt,
             color: this.order.isReceiptIssued ? Colors.blue : Colors.grey,
-            onPressed: () {
-              this.order.isReceiptIssued = !this.order.isReceiptIssued;
-              FirebaseService.updateOpenOrder(this.order);
-            },
+            onPressed: this._markOrderAsReceiptIssued,
           ),
           SizedBox(
             width: 20.0,
@@ -86,22 +68,37 @@ class OrderControlStrip extends StatelessWidget {
             color: Util.isEmptyOrNull(this.order.uniqueCode)
                 ? Colors.grey
                 : Colors.green,
-            onPressed: () async {
-              try {
-                String scannedResult = await scanner.scan();
-                if (scannedResult != null &&
-                    Util.isValidUniqueCode(scannedResult)) {
-                  this.order.uniqueCode = scannedResult;
-                  FirebaseService.updateOpenOrder(this.order);
-                }
-              } catch (e) {
-                return;
-              }
-            },
+            onPressed: this._scanUniqueCode,
           ),
         ],
       ),
     );
+  }
+
+  void _completeOrder() {
+    this.order.isCompleted = !this.order.isCompleted;
+    if (this.order.isCompleted)
+      FirebaseService.closeOrder(this.order);
+    else
+      FirebaseService.openOrder(this.order);
+  }
+
+  void _cancelOrder() {
+    this.order.isCancelled = !this.order.isCancelled;
+    if (this.order.isCancelled)
+      FirebaseService.closeOrder(this.order);
+    else
+      FirebaseService.openOrder(this.order);
+  }
+
+  void _markOrderAsPaid() {
+    this.order.isPaidFor = !this.order.isPaidFor;
+    FirebaseService.updateOpenOrder(this.order);
+  }
+
+  void _markOrderAsReceiptIssued() {
+    this.order.isReceiptIssued = !this.order.isReceiptIssued;
+    FirebaseService.updateOpenOrder(this.order);
   }
 
   Future<void> _showDiscountDialog(BuildContext context) async {
@@ -146,5 +143,17 @@ class OrderControlStrip extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _scanUniqueCode() async {
+    try {
+      String scannedResult = await scanner.scan();
+      if (scannedResult != null && Util.isValidUniqueCode(scannedResult)) {
+        this.order.uniqueCode = scannedResult;
+        FirebaseService.updateOpenOrder(this.order);
+      }
+    } catch (e) {
+      return;
+    }
   }
 }
