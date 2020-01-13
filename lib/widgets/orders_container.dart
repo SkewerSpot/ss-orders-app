@@ -5,6 +5,7 @@ import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
+import 'package:ss_orders/widgets/no_orders_placeholder.dart';
 
 import 'order_card.dart';
 
@@ -49,9 +50,11 @@ class OrdersContainer extends StatelessWidget {
             appState.setOpenOrdersCount(listViewChildren.length);
           }
 
-          return ListView(
-            children: listViewChildren,
-          );
+          return listViewChildren.length > 0
+              ? ListView(
+                  children: listViewChildren,
+                )
+              : NoOrdersPlaceholder();
         },
       ),
     );
