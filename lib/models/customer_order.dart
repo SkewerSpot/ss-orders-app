@@ -149,11 +149,13 @@ class CustomerOrder {
       completedTimestamp: data['completedTimestamp'] ?? '',
       isCancelled: data['isCancelled'] ?? false,
       isDiscounted: data['isDiscounted'] ?? false,
-      discountAmount: data['discountAmount'] is String
-          ? double.parse(data['discountAmount'])
-          : data['discountAmount'] is int
-              ? (data['discountAmount'] as int).toDouble()
-              : 0.0,
+      discountAmount: data['discountAmount'] is double
+          ? data['discountAmount']
+          : data['discountAmount'] is String
+              ? double.parse(data['discountAmount'])
+              : data['discountAmount'] is int
+                  ? (data['discountAmount'] as int).toDouble()
+                  : 0.0,
       channel: data['channel'] ?? '',
       taxRateCGST: data['taxRateCGST'] ?? kTaxRateCGST,
       taxRateSGST: data['taxRateSGST'] ?? kTaxRateSGST,
