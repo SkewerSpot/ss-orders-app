@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/customer_order.dart';
+import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/icon_action_buton.dart';
 
 /// A row of action buttons that act on the given order.
@@ -72,7 +73,9 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.money_off,
             color: this.order.isDiscounted ? Colors.blue : Colors.grey,
-            onPressed: () {},
+            onPressed: () async {
+              this._showDiscountDialog(context);
+            },
           ),
           SizedBox(
             width: 20.0,
@@ -84,6 +87,50 @@ class OrderControlStrip extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _showDiscountDialog(BuildContext context) async {
+    TextEditingController textEditingController = TextEditingController();
+    textEditingController.text = this.order.discountAmount != null
+        ? this.order.discountAmount.toString()
+        : '';
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter discount amount:'),
+          content: TextField(
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            controller: textEditingController,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                String inputValue = textEditingController.text;
+                if (Util.isEmptyOrNull(inputValue)) inputValue = '0';
+                this.order.discountAmount = double.parse(inputValue);
+                if (this.order.discountAmount > 0)
+                  this.order.isDiscounted = true;
+                else
+                  this.order.isDiscounted = false;
+                FirebaseService.updateOpenOrder(this.order);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
