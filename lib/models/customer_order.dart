@@ -97,6 +97,14 @@ class CustomerOrder {
   /// For example, "menuapp", "gmail2order", etc.
   final String source;
 
+  /// A collectible unique code part of loyalty program.
+  ///
+  /// This is usually printed on a thank you note
+  /// and scanned using qrcode reader.
+  ///
+  /// See: https://github.com/SkewerSpot/thankyou-gen
+  String uniqueCode;
+
   CustomerOrder({
     @required this.orderId,
     this.customerName,
@@ -121,6 +129,7 @@ class CustomerOrder {
     this.taxRateGST = kTaxRateGST,
     this.isInclusiveOfTaxes = false,
     @required this.source,
+    this.uniqueCode,
   });
 
   /// Returns a deserialized instance of [CustomerOrder] from a Map.
@@ -162,6 +171,7 @@ class CustomerOrder {
       taxRateGST: data['taxRateGST'] ?? kTaxRateGST,
       isInclusiveOfTaxes: data['isInclusiveOfTaxes'] ?? false,
       source: data['source'] ?? '',
+      uniqueCode: data['uniqueCode'],
     );
   }
 
@@ -192,6 +202,7 @@ class CustomerOrder {
       'taxRateGST': this.taxRateGST,
       'isInclusiveOfTaxes': this.isInclusiveOfTaxes,
       'source': this.source,
+      'uniqueCode': this.uniqueCode,
     };
   }
 
