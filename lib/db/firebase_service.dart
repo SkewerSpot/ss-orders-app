@@ -61,6 +61,12 @@ class FirebaseService {
       await _databaseRef
           .child('open-orders/${order.orderId}')
           .set(order.toMap());
+      if (!Util.isEmptyOrNull(order.uniqueCode)) {
+        var orderDate = DateTime.parse(order.timestamp);
+        await _addUniqueCode(
+            '${Util.getYYYYMMDDDate(orderDate)}/${order.orderId}',
+            order.uniqueCode);
+      }
       return true;
     } catch (e) {
       return false;
@@ -106,6 +112,21 @@ class FirebaseService {
           .child(
               'orders/${Util.getYYYYMMDDDate(DateTime.now())}/${order.orderId}')
           .remove();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Adds a unique code to the "unique-codes" map in Firebase.
+  ///
+  /// [orderPath] should be a valid Firebase path to an order,
+  /// in the format "YYYY/MM/DD/<orderId>".
+  ///
+  /// Returns true if successful, false otherwise.
+  static Future<bool> _addUniqueCode(String orderPath, String code) async {
+    try {
+      await _databaseRef.child('unique-codes/$code').set(orderPath);
       return true;
     } catch (e) {
       return false;

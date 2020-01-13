@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/util.dart';
@@ -82,8 +83,21 @@ class OrderControlStrip extends StatelessWidget {
           ),
           IconActionButton(
             icon: Icons.camera,
-            color: Colors.grey,
-            onPressed: () {},
+            color: Util.isEmptyOrNull(this.order.uniqueCode)
+                ? Colors.grey
+                : Colors.green,
+            onPressed: () async {
+              try {
+                String scannedResult = await scanner.scan();
+                if (scannedResult != null &&
+                    Util.isValidUniqueCode(scannedResult)) {
+                  this.order.uniqueCode = scannedResult;
+                  FirebaseService.updateOpenOrder(this.order);
+                }
+              } catch (e) {
+                return;
+              }
+            },
           ),
         ],
       ),

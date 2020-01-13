@@ -14,4 +14,10 @@ class Util {
   static bool isEmptyOrNull(String s) {
     return ['', null].contains(s);
   }
+
+  /// Returns true if given unique code is a string of 6 digits,
+  /// much like a PIN or an OTP code.
+  static bool isValidUniqueCode(String code) {
+    return RegExp(r'^(\d{6})$').hasMatch(code);
+  }
 }
