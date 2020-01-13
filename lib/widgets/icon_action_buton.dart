@@ -18,6 +18,7 @@ class IconActionButton extends StatelessWidget {
       width: 35.0,
       height: 35.0,
       child: FlatButton(
+        disabledColor: Colors.yellow,
         padding: EdgeInsets.all(0.0),
         color: Color(0xFFF6F8FC),
         child: Icon(

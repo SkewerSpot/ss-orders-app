@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:ss_orders/db/firebase_service.dart';
+import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/icon_action_buton.dart';
@@ -13,6 +15,8 @@ class OrderControlStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 10.0,
@@ -40,7 +44,8 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.monetization_on,
             color: this.order.isPaidFor ? Colors.blue : Colors.grey,
-            onPressed: this._markOrderAsPaid,
+            onPressed:
+                appState.selectedTab == 'open' ? this._markOrderAsPaid : null,
           ),
           SizedBox(
             width: 20.0,
@@ -48,7 +53,9 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.receipt,
             color: this.order.isReceiptIssued ? Colors.blue : Colors.grey,
-            onPressed: this._markOrderAsReceiptIssued,
+            onPressed: appState.selectedTab == 'open'
+                ? this._markOrderAsReceiptIssued
+                : null,
           ),
           SizedBox(
             width: 20.0,
@@ -56,9 +63,11 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.money_off,
             color: this.order.isDiscounted ? Colors.blue : Colors.grey,
-            onPressed: () async {
-              this._showDiscountDialog(context);
-            },
+            onPressed: appState.selectedTab == 'open'
+                ? () async {
+                    this._showDiscountDialog(context);
+                  }
+                : null,
           ),
           SizedBox(
             width: 20.0,
@@ -68,7 +77,8 @@ class OrderControlStrip extends StatelessWidget {
             color: Util.isEmptyOrNull(this.order.uniqueCode)
                 ? Colors.grey
                 : Colors.green,
-            onPressed: this._scanUniqueCode,
+            onPressed:
+                appState.selectedTab == 'open' ? this._scanUniqueCode : null,
           ),
         ],
       ),
