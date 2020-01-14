@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/db/firebase_service.dart';
+import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_control_strip.dart';
@@ -49,6 +51,7 @@ class _OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     return Container(
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -71,8 +74,10 @@ class _OrderCardState extends State<OrderCard> {
                 ),
               ),
               SizedBox(width: 5.0),
-              // TIME AGO
-              Text('${this._minsAgo}m ago'),
+              // TIME AGO / TIME TO COMPLETE
+              appState.selectedTab == 'open'
+                  ? Text('${this._minsAgo}m ago')
+                  : Text('Completed in ${this._completionTime().toString()}m'),
             ],
           ),
           SizedBox(height: 5.0),
@@ -203,5 +208,15 @@ class _OrderCardState extends State<OrderCard> {
         ],
       ),
     );
+  }
+
+  /// Returns time (in minutes) it took to complete the order.
+  int _completionTime() {
+    var receivedTime = DateTime.parse(this.widget.order.timestamp);
+    var completedTime = DateTime.parse(
+        Util.isEmptyOrNull(this.widget.order.completedTimestamp)
+            ? this.widget.order.timestamp
+            : this.widget.order.completedTimestamp);
+    return completedTime.difference(receivedTime).inMinutes;
   }
 }
