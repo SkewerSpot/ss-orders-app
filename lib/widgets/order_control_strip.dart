@@ -51,16 +51,6 @@ class OrderControlStrip extends StatelessWidget {
             width: 20.0,
           ),
           IconActionButton(
-            icon: Icons.receipt,
-            color: this.order.isReceiptIssued ? Colors.blue : Colors.grey,
-            onPressed: appState.selectedTab == 'open'
-                ? this._markOrderAsReceiptIssued
-                : null,
-          ),
-          SizedBox(
-            width: 20.0,
-          ),
-          IconActionButton(
             icon: Icons.money_off,
             color: this.order.isDiscounted ? Colors.blue : Colors.grey,
             onPressed: appState.selectedTab == 'open'
@@ -103,11 +93,6 @@ class OrderControlStrip extends StatelessWidget {
 
   void _markOrderAsPaid() {
     this.order.isPaidFor = !this.order.isPaidFor;
-    FirebaseService.updateOpenOrder(this.order);
-  }
-
-  void _markOrderAsReceiptIssued() {
-    this.order.isReceiptIssued = !this.order.isReceiptIssued;
     FirebaseService.updateOpenOrder(this.order);
   }
 
