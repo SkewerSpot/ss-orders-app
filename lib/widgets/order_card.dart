@@ -158,7 +158,7 @@ class _OrderCardState extends State<OrderCard> {
                           '₹${widget.order.totalCost().toStringAsFixed(2)} total',
                           style: TextStyle(
                             color: kThemeColorWhite,
-                            fontSize: 12.0,
+                            fontSize: 10.0,
                           ),
                         ),
                         Visibility(
@@ -167,7 +167,7 @@ class _OrderCardState extends State<OrderCard> {
                             ' - ₹${widget.order.discountAmount.toStringAsFixed(2)} off',
                             style: TextStyle(
                               color: kThemeColorWhite,
-                              fontSize: 12.0,
+                              fontSize: 10.0,
                             ),
                           ),
                         ),
@@ -175,7 +175,7 @@ class _OrderCardState extends State<OrderCard> {
                           ' + ₹${widget.order.totalTax().toStringAsFixed(2)} tax',
                           style: TextStyle(
                             color: kThemeColorWhite,
-                            fontSize: 12.0,
+                            fontSize: 10.0,
                           ),
                         ),
                       ],
