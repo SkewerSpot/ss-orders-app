@@ -60,7 +60,8 @@ class _OrderCardState extends State<OrderCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // HEADING
-          Row(
+          Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: <Widget>[
               // TOKEN NO.
               Text(
