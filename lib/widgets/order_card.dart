@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/db/firebase_service.dart';
-import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_control_strip.dart';
@@ -51,7 +49,6 @@ class _OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
     return Container(
       padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -75,9 +72,9 @@ class _OrderCardState extends State<OrderCard> {
               ),
               SizedBox(width: 5.0),
               // TIME AGO / TIME TO COMPLETE
-              appState.selectedTab == 'open'
-                  ? Text('${this._minsAgo}m ago')
-                  : Text('Completed in ${this._completionTime().toString()}m'),
+              this.widget.order.isCompleted || this.widget.order.isCancelled
+                  ? Text('Completed in ${this._completionTime().toString()}m')
+                  : Text('${this._minsAgo}m ago'),
             ],
           ),
           SizedBox(height: 5.0),
