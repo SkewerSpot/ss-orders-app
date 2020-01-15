@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:ss_orders/db/firebase_service.dart';
-import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/icon_action_buton.dart';
@@ -15,8 +13,6 @@ class OrderControlStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appState = Provider.of<AppState>(context);
-
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 10.0,
@@ -44,8 +40,7 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.monetization_on,
             color: this.order.isPaidFor ? Colors.blue : Colors.grey,
-            onPressed:
-                appState.selectedTab == 'open' ? this._markOrderAsPaid : null,
+            onPressed: this._isOrderClosed() ? null : this._markOrderAsPaid,
           ),
           SizedBox(
             width: 20.0,
@@ -53,11 +48,11 @@ class OrderControlStrip extends StatelessWidget {
           IconActionButton(
             icon: Icons.money_off,
             color: this.order.isDiscounted ? Colors.blue : Colors.grey,
-            onPressed: appState.selectedTab == 'open'
-                ? () async {
+            onPressed: this._isOrderClosed()
+                ? null
+                : () async {
                     this._showDiscountDialog(context);
-                  }
-                : null,
+                  },
           ),
           SizedBox(
             width: 20.0,
@@ -67,12 +62,15 @@ class OrderControlStrip extends StatelessWidget {
             color: Util.isEmptyOrNull(this.order.uniqueCode)
                 ? Colors.grey
                 : Colors.green,
-            onPressed:
-                appState.selectedTab == 'open' ? this._scanUniqueCode : null,
+            onPressed: this._isOrderClosed() ? null : this._scanUniqueCode,
           ),
         ],
       ),
     );
+  }
+
+  bool _isOrderClosed() {
+    return this.order.isCompleted || this.order.isCancelled;
   }
 
   void _completeOrder() {
