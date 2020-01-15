@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:ss_orders/models/app_state.dart';
 
 import 'package:ss_orders/screens/orders_screen.dart';
 
 void main() {
   testWidgets('OrdersScreen displays as expected', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: OrdersScreen()));
+    await tester.pumpWidget(orderScreenWrapper());
 
     final semHandle = tester.ensureSemantics();
 
@@ -21,4 +23,12 @@ void main() {
 
     semHandle.dispose();
   });
+}
+
+Widget orderScreenWrapper() {
+  var appState = AppState();
+  return ChangeNotifierProvider(
+    create: (context) => appState,
+    child: MaterialApp(home: OrdersScreen()),
+  );
 }

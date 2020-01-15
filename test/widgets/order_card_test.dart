@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/models/order_item.dart';
 
@@ -7,18 +9,57 @@ import 'package:ss_orders/widgets/order_card.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
 
 void main() {
-  testWidgets('OrderCard correctly displays an open order',
-      (WidgetTester tester) async {
-    var order = openOrder();
+  group('OrderCard widget', () {
+    testWidgets('correctly displays an open order',
+        (WidgetTester tester) async {
+      var order = openOrder();
 
-    await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
+      await tester.pumpWidget(orderCardWrapper(order));
 
-    expect(find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
+      expect(
+          find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
 
-    expect(find.text(order.channel), findsOneWidget);
+      expect(find.text(order.channel), findsOneWidget);
 
-    expect(find.text(order.customerCarNum), findsNothing);
+      expect(find.text(order.customerCarNum), findsNothing);
+    });
+
+    testWidgets('correctly displays a completed order',
+        (WidgetTester tester) async {
+      var order = completedOrder();
+
+      await tester.pumpWidget(orderCardWrapper(order));
+
+      expect(
+          find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
+
+      expect(find.text(order.channel), findsOneWidget);
+
+      expect(find.text(order.customerCarNum), findsNothing);
+    });
+
+    testWidgets('correctly displays a cancelled order',
+        (WidgetTester tester) async {
+      var order = cancelledOrder();
+
+      await tester.pumpWidget(orderCardWrapper(order));
+
+      expect(
+          find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
+
+      expect(find.text(order.channel), findsOneWidget);
+
+      expect(find.text(order.customerCarNum), findsNothing);
+    });
   });
+}
+
+Widget orderCardWrapper(CustomerOrder order) {
+  var appState = AppState();
+  return ChangeNotifierProvider(
+    create: (context) => appState,
+    child: MaterialApp(home: OrderCard(order: order)),
+  );
 }
 
 CustomerOrder openOrder() {
@@ -44,6 +85,8 @@ CustomerOrder completedOrder() {
     timestamp: DateTime.now().toIso8601String(),
     source: 'mr.test',
     isCompleted: true,
+    completedTimestamp:
+        DateTime.now().add(Duration(minutes: 5)).toIso8601String(),
     orderItems: [
       OrderItem(name: 'Cheese Burst Pizza', price: 100.0),
       OrderItem(name: 'Super Duper Burger', price: 75.0),
@@ -59,6 +102,8 @@ CustomerOrder cancelledOrder() {
     timestamp: DateTime.now().toIso8601String(),
     source: 'mr.test',
     isCancelled: true,
+    completedTimestamp:
+        DateTime.now().add(Duration(minutes: 5)).toIso8601String(),
     orderItems: [
       OrderItem(name: 'Cheese Burst Pizza', price: 100.0),
       OrderItem(name: 'Super Duper Burger', price: 75.0),
