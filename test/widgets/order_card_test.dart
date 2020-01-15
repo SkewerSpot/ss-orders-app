@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/models/order_item.dart';
 
@@ -14,7 +12,7 @@ void main() {
         (WidgetTester tester) async {
       var order = openOrder();
 
-      await tester.pumpWidget(orderCardWrapper(order));
+      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
@@ -28,7 +26,7 @@ void main() {
         (WidgetTester tester) async {
       var order = completedOrder();
 
-      await tester.pumpWidget(orderCardWrapper(order));
+      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
@@ -42,7 +40,7 @@ void main() {
         (WidgetTester tester) async {
       var order = cancelledOrder();
 
-      await tester.pumpWidget(orderCardWrapper(order));
+      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
@@ -52,14 +50,6 @@ void main() {
       expect(find.text(order.customerCarNum), findsNothing);
     });
   });
-}
-
-Widget orderCardWrapper(CustomerOrder order) {
-  var appState = AppState();
-  return ChangeNotifierProvider(
-    create: (context) => appState,
-    child: MaterialApp(home: OrderCard(order: order)),
-  );
 }
 
 CustomerOrder openOrder() {
