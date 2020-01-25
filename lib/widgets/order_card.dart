@@ -7,6 +7,7 @@ import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_control_strip.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
+import 'package:ss_orders/widgets/unique_code_card.dart';
 
 /// Visual representation of a [CustomerOrder].
 class OrderCard extends StatefulWidget {
@@ -19,11 +20,16 @@ class OrderCard extends StatefulWidget {
   /// Whether to display associated unique code information.
   final bool showUniqueCodeInfo;
 
-  OrderCard({
-    @required this.order,
-    this.showControlStrip = true,
-    this.showUniqueCodeInfo = false,
-  });
+  /// Date when attached unique code was redeemed.
+  /// This property may also be used as a check for
+  /// whether the attached unique code has been redeemed.
+  final DateTime uniqueCodeRedeemedAt;
+
+  OrderCard(
+      {@required this.order,
+      this.showControlStrip = true,
+      this.showUniqueCodeInfo = false,
+      this.uniqueCodeRedeemedAt});
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -89,7 +95,22 @@ class _OrderCardState extends State<OrderCard> {
                   : Text('${this._minsAgo}m ago'),
             ],
           ),
+
           SizedBox(height: 5.0),
+
+          /// UNIQUE CODE
+          Visibility(
+            visible: this.widget.showUniqueCodeInfo &&
+                !Util.isEmptyOrNull(this.widget.order.uniqueCode),
+            child: UniqueCodeCard(
+              code: this.widget.order.uniqueCode,
+              attachedAt: DateTime.parse(this.widget.order.timestamp),
+              redeemedAt: this.widget.uniqueCodeRedeemedAt,
+            ),
+          ),
+
+          SizedBox(height: 5.0),
+
           // META DATA
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -199,6 +220,7 @@ class _OrderCardState extends State<OrderCard> {
               ),
             ),
           ),
+
           // ITEMS
           ...widget.order.orderItems
               .map((item) => Padding(
@@ -216,20 +238,6 @@ class _OrderCardState extends State<OrderCard> {
           Visibility(
             visible: this.widget.showControlStrip,
             child: OrderControlStrip(order: widget.order),
-          ),
-
-          /// UNIQUE CODE
-          Visibility(
-            visible: this.widget.showUniqueCodeInfo &&
-                !Util.isEmptyOrNull(this.widget.order.uniqueCode),
-            child: Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Unique code ${this.widget.order.uniqueCode} ' +
-                    'attached on ${this.widget.order.timestamp}',
-              ),
-            ),
           ),
         ],
       ),
