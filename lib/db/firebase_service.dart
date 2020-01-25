@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:ss_orders/models/unique_code_meta.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 
@@ -126,7 +127,12 @@ class FirebaseService {
   /// Returns true if successful, false otherwise.
   static Future<bool> _addUniqueCode(String orderPath, String code) async {
     try {
-      await _databaseRef.child('unique-codes/$code').set(orderPath);
+      var meta = UniqueCodeMeta(
+        orderPath: orderPath,
+        isRedeemed: false,
+        redeemedTimestamp: '',
+      );
+      await _databaseRef.child('unique-codes/$code').set(meta.toMap());
       return true;
     } catch (e) {
       return false;
