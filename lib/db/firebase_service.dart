@@ -119,6 +119,29 @@ class FirebaseService {
     }
   }
 
+  /// Returns [UniqueCodeMeta] instance for given unique code.
+  static Future<UniqueCodeMeta> getUniqueCodeMeta(String code) async {
+    try {
+      var uniqueCodeMetaSnapshot =
+          await _databaseRef.child('/unique-codes/$code').once();
+      var uniqueCodeMeta = UniqueCodeMeta.fromMap(uniqueCodeMetaSnapshot.value);
+      return uniqueCodeMeta;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Returns [CustomerOrder] instance for order at given path.
+  static Future<CustomerOrder> getOrder(String path) async {
+    try {
+      var orderSnapshot = await _databaseRef.child('/orders/$path').once();
+      var order = CustomerOrder.fromMap(orderSnapshot.value);
+      return order;
+    } catch (e) {
+      return null;
+    }
+  }
+
   /// Adds a unique code to the "unique-codes" map in Firebase.
   ///
   /// [orderPath] should be a valid Firebase path to an order,
