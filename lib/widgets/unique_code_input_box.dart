@@ -59,8 +59,8 @@ class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
                 this.setState(() {
                   this.codes.add(potentialCode);
                   controller.clear();
+                  this.widget.onUniqueCodeDetected(this.codes);
                 });
-                this.widget.onUniqueCodeDetected(this.codes);
               }
             },
           ),
