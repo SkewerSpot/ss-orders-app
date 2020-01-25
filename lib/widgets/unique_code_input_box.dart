@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ss_orders/db/firebase_service.dart';
+import 'package:ss_orders/models/unique_code_meta.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/text_tag.dart';
 
-typedef void CodeDetectedCallback(List<String> codes);
+typedef void CodeDetectedCallback(Map<String, UniqueCodeMeta> codes);
 
 /// A widget that allows to enter unique codes,
 /// and keeps track of all valid entered codes.
 class UniqueCodeInputBox extends StatefulWidget {
   /// Callback to fire when the inputted text is detected
   /// as a valid unique code.
-  /// Receives as argument a list of all detected unique codes.
+  /// Receives as argument a map of all detected unique codes
+  /// and their metadata.
   final CodeDetectedCallback onUniqueCodeDetected;
 
   UniqueCodeInputBox({@required this.onUniqueCodeDetected});
@@ -19,11 +22,11 @@ class UniqueCodeInputBox extends StatefulWidget {
 }
 
 class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
-  List<String> codes;
+  Map<String, UniqueCodeMeta> codes;
 
   @override
   void initState() {
-    codes = [];
+    codes = {};
 
     super.initState();
   }
@@ -53,11 +56,22 @@ class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
               filled: true,
               fillColor: Colors.yellow[800],
             ),
-            onChanged: (text) {
+            onChanged: (text) async {
               var potentialCode = text.trim();
               if (Util.isValidUniqueCode(potentialCode)) {
+                var meta =
+                    await FirebaseService.getUniqueCodeMeta(potentialCode);
+
+                if (meta == null) {
+                  return this._showDialog(context, 'Error',
+                      'There was an error in validating unique code');
+                } else if (Util.isEmptyOrNull(meta.orderPath)) {
+                  return this._showDialog(context, 'Invalid Unique Code',
+                      'The unique code $potentialCode has not been attached with an order yet.');
+                }
+
                 this.setState(() {
-                  this.codes.add(potentialCode);
+                  this.codes[potentialCode] = meta;
                   controller.clear();
                   this.widget.onUniqueCodeDetected(this.codes);
                 });
@@ -67,7 +81,7 @@ class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
         ),
         Wrap(
           alignment: WrapAlignment.start,
-          children: codes
+          children: codes.keys
               .map((code) => TextTag(
                     text: code,
                     onCancelPressed: () {
@@ -77,6 +91,27 @@ class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
               .toList(),
         )
       ],
+    );
+  }
+
+  Future<void> _showDialog(BuildContext context, String title, String message) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
