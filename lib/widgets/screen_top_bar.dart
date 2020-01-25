@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/screens/validate_code_screen.dart';
 
 /// An [AppBar]-like widget typically shown at the top of a screen.
 ///
@@ -27,7 +28,9 @@ class ScreenTopBar extends StatelessWidget {
           iconSize: 30.0,
           icon: Icon(Icons.camera),
           color: kThemeColorPurple,
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, ValidateCodeScreen.id);
+          },
         ),
       ],
     );

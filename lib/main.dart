@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/screens/orders_screen.dart';
+import 'package:ss_orders/screens/validate_code_screen.dart';
 
 void main() => runApp(SSOrdersApp());
 
@@ -27,7 +28,10 @@ class _SSOrdersAppState extends State<SSOrdersApp> {
       create: (context) => this.appState,
       child: MaterialApp(
         theme: ThemeData(fontFamily: 'Poppins'),
-        routes: {OrdersScreen.id: (context) => OrdersScreen()},
+        routes: {
+          OrdersScreen.id: (context) => OrdersScreen(),
+          ValidateCodeScreen.id: (context) => ValidateCodeScreen(),
+        },
         initialRoute: OrdersScreen.id,
       ),
     );
