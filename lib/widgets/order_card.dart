@@ -10,9 +10,20 @@ import 'package:ss_orders/widgets/order_item_card.dart';
 
 /// Visual representation of a [CustomerOrder].
 class OrderCard extends StatefulWidget {
+  /// The associate order model object.
   final CustomerOrder order;
 
-  OrderCard({@required this.order});
+  /// Whether to display action buttons to manage order.
+  final bool showControlStrip;
+
+  /// Whether to display associated unique code information.
+  final bool showUniqueCodeInfo;
+
+  OrderCard({
+    @required this.order,
+    this.showControlStrip = true,
+    this.showUniqueCodeInfo = false,
+  });
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -202,7 +213,24 @@ class _OrderCardState extends State<OrderCard> {
               .toList(),
 
           /// ACTION BUTTONS
-          OrderControlStrip(order: widget.order),
+          Visibility(
+            visible: this.widget.showControlStrip,
+            child: OrderControlStrip(order: widget.order),
+          ),
+
+          /// UNIQUE CODE
+          Visibility(
+            visible: this.widget.showUniqueCodeInfo &&
+                !Util.isEmptyOrNull(this.widget.order.uniqueCode),
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Unique code ${this.widget.order.uniqueCode} ' +
+                    'attached on ${this.widget.order.timestamp}',
+              ),
+            ),
+          ),
         ],
       ),
     );

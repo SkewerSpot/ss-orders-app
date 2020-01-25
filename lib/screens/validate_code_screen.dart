@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
-import 'package:ss_orders/widgets/orders_container.dart';
+import 'package:ss_orders/widgets/orders_container_alt.dart';
 import 'package:ss_orders/widgets/unique_code_input_box.dart';
 
 class ValidateCodeScreen extends StatelessWidget {
@@ -32,7 +32,9 @@ class ValidateCodeScreen extends StatelessWidget {
             height: 20.0,
           ),
           Expanded(
-            child: OrdersContainer(),
+            child: OrdersContainerAlt(
+              orders: [],
+            ),
           )
         ],
       ),
