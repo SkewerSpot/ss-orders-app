@@ -52,7 +52,7 @@ class UniqueCodeCard extends StatelessWidget {
             ),
             IconActionButton(
               color: redeemedAt != null ? Colors.green : Colors.grey,
-              icon: Icons.done,
+              icon: Icons.check_box,
               onPressed: () {
                 appState.toggleUniqueCodeRedeemedStatus(this.code);
               },
