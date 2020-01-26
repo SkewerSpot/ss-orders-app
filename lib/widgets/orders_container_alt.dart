@@ -23,7 +23,17 @@ class OrdersContainerAlt extends StatelessWidget {
     List<OrderCard> orderCards = this
         .orders
         .map((o) => OrderCard(
-              order: o,
+              order: o != null
+                  ? o
+                  : CustomerOrder(
+                      orderId: 'undefined',
+                      token: 0,
+                      source: 'undefined',
+                      timestamp: '1990-01-01',
+                      isCompleted: true,
+                      orderItems: [],
+                      channel: 'Order not found in database',
+                    ),
               showControlStrip: false,
               showUniqueCodeInfo: true,
             ))
