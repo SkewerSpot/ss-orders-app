@@ -1,38 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ss_orders/db/firebase_service.dart';
-import 'package:ss_orders/models/unique_code_meta.dart';
+import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/text_tag.dart';
 
-typedef void CodeDetectedCallback(Map<String, UniqueCodeMeta> codes);
-
 /// A widget that allows to enter unique codes,
 /// and keeps track of all valid entered codes.
-class UniqueCodeInputBox extends StatefulWidget {
-  /// Callback to fire when the inputted text is detected
-  /// as a valid unique code.
-  /// Receives as argument a map of all detected unique codes
-  /// and their metadata.
-  final CodeDetectedCallback onUniqueCodeDetected;
-
-  UniqueCodeInputBox({@required this.onUniqueCodeDetected});
-
-  @override
-  _UniqueCodeInputBoxState createState() => _UniqueCodeInputBoxState();
-}
-
-class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
-  Map<String, UniqueCodeMeta> codes;
-
-  @override
-  void initState() {
-    codes = {};
-
-    super.initState();
-  }
-
+class UniqueCodeInputBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
     var controller = new TextEditingController();
 
     return Column(
@@ -70,22 +48,19 @@ class _UniqueCodeInputBoxState extends State<UniqueCodeInputBox> {
                       'The unique code $potentialCode has not been attached with an order yet.');
                 }
 
-                this.setState(() {
-                  this.codes[potentialCode] = meta;
-                  controller.clear();
-                  this.widget.onUniqueCodeDetected(this.codes);
-                });
+                appState.addUniqueCodeToReview(potentialCode, meta);
+                controller.clear();
               }
             },
           ),
         ),
         Wrap(
           alignment: WrapAlignment.start,
-          children: codes.keys
+          children: appState.uniqueCodesUnderReview.keys
               .map((code) => TextTag(
                     text: code,
                     onCancelPressed: () {
-                      this.setState(() => this.codes.remove(code));
+                      appState.removeUniqueCodeFromReview(code);
                     },
                   ))
               .toList(),
