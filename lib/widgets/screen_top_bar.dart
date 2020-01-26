@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
 import 'package:ss_orders/screens/validate_code_screen.dart';
+import 'package:ss_orders/widgets/icon_action_buton.dart';
 
 /// An [AppBar]-like widget typically shown at the top of a screen.
 ///
@@ -24,10 +25,9 @@ class ScreenTopBar extends StatelessWidget {
             fontSize: 30.0,
           ),
         ),
-        IconButton(
-          iconSize: 30.0,
-          icon: Icon(Icons.camera),
-          color: kThemeColorPurple,
+        IconActionButton(
+          color: Colors.green,
+          icon: Icons.camera,
           onPressed: () {
             Navigator.pushNamed(context, ValidateCodeScreen.id);
           },
