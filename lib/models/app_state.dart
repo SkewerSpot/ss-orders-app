@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/unique_code_meta.dart';
 
 class AppState extends ChangeNotifier {
@@ -45,5 +46,28 @@ class AppState extends ChangeNotifier {
   void removeUniqueCodeFromReview(String code) {
     this._uniqueCodesUnderReview.remove(code);
     this.notifyListeners();
+  }
+
+  /// Toggles the given unique code's redeemed status,
+  /// and triggers state change.
+  ///
+  /// This effectively toggles the code metadata's
+  /// `isRedeemed` property and sets `redeemedTimestamp` accordingly.
+  void toggleUniqueCodeRedeemedStatus(String code) async {
+    var oldMeta = this._uniqueCodesUnderReview[code];
+
+    var newMeta = UniqueCodeMeta(
+      orderPath: oldMeta.orderPath,
+      isRedeemed: !oldMeta.isRedeemed,
+      redeemedTimestamp:
+          !oldMeta.isRedeemed ? DateTime.now().toUtc().toIso8601String() : '',
+    );
+
+    var didUpdate = await FirebaseService.updateUniqueCode(code, newMeta);
+
+    if (didUpdate) {
+      this._uniqueCodesUnderReview[code] = newMeta;
+      this.notifyListeners();
+    }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/icon_action_buton.dart';
 
@@ -16,17 +18,17 @@ class UniqueCodeCard extends StatelessWidget {
   /// Date when the code was attached to its order.
   final DateTime attachedAt;
 
-  /// Date when the code was redeemed by customer.
-  final DateTime redeemedAt;
-
   UniqueCodeCard({
     @required this.code,
     @required this.attachedAt,
-    this.redeemedAt,
   });
 
   @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+    var ts = appState.uniqueCodesUnderReview[this.code].redeemedTimestamp;
+    DateTime redeemedAt = Util.isEmptyOrNull(ts) ? null : DateTime.parse(ts);
+
     return Material(
       elevation: 5.0,
       color: kThemeColorYellow,
@@ -42,22 +44,22 @@ class UniqueCodeCard extends StatelessWidget {
                 Text('Unique code ${this.code}'),
                 Text('attached on ${Util.getYYYYMMDDDate(this.attachedAt)}'),
                 Visibility(
-                  visible: this.redeemedAt != null,
-                  child: Text(
-                      'redeemed on ${Util.getYYYYMMDDDate(this.redeemedAt)}'),
+                  visible: redeemedAt != null,
+                  child:
+                      Text('redeemed on ${Util.getYYYYMMDDDate(redeemedAt)}'),
                 ),
               ],
             ),
             IconActionButton(
-              color: this.redeemedAt != null ? Colors.green : Colors.grey,
+              color: redeemedAt != null ? Colors.green : Colors.grey,
               icon: Icons.done,
-              onPressed: this._toggleRedemptionStatus,
+              onPressed: () {
+                appState.toggleUniqueCodeRedeemedStatus(this.code);
+              },
             ),
           ],
         ),
       ),
     );
   }
-
-  Future<void> _toggleRedemptionStatus() async {}
 }

@@ -142,6 +142,18 @@ class FirebaseService {
     }
   }
 
+  /// Replaces a unique code at its Firebase path with given metadata object.
+  ///
+  /// Returns true is successful, false otherwise.
+  static Future<bool> updateUniqueCode(String code, UniqueCodeMeta meta) async {
+    try {
+      await _databaseRef.child('unique-codes/$code').set(meta.toMap());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /// Adds a unique code to the "unique-codes" map in Firebase.
   ///
   /// [orderPath] should be a valid Firebase path to an order,

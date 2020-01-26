@@ -20,16 +20,11 @@ class OrderCard extends StatefulWidget {
   /// Whether to display associated unique code information.
   final bool showUniqueCodeInfo;
 
-  /// Date when attached unique code was redeemed.
-  /// This property may also be used as a check for
-  /// whether the attached unique code has been redeemed.
-  final DateTime uniqueCodeRedeemedAt;
-
-  OrderCard(
-      {@required this.order,
-      this.showControlStrip = true,
-      this.showUniqueCodeInfo = false,
-      this.uniqueCodeRedeemedAt});
+  OrderCard({
+    @required this.order,
+    this.showControlStrip = true,
+    this.showUniqueCodeInfo = false,
+  });
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -105,7 +100,6 @@ class _OrderCardState extends State<OrderCard> {
             child: UniqueCodeCard(
               code: this.widget.order.uniqueCode,
               attachedAt: DateTime.parse(this.widget.order.timestamp),
-              redeemedAt: this.widget.uniqueCodeRedeemedAt,
             ),
           ),
 
