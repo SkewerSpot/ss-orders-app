@@ -6,13 +6,19 @@ import 'package:ss_orders/models/order_item.dart';
 import 'package:ss_orders/widgets/order_card.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
 
+import '../mock_firebase_service.dart';
+
 void main() {
   group('OrderCard widget', () {
     testWidgets('correctly displays an open order',
         (WidgetTester tester) async {
       var order = openOrder();
 
-      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
+      await tester.pumpWidget(MaterialApp(
+          home: OrderCard(
+        order: order,
+        firebaseService: MockFirebaseService(),
+      )));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
@@ -26,7 +32,11 @@ void main() {
         (WidgetTester tester) async {
       var order = completedOrder();
 
-      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
+      await tester.pumpWidget(MaterialApp(
+          home: OrderCard(
+        order: order,
+        firebaseService: MockFirebaseService(),
+      )));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));
@@ -40,7 +50,11 @@ void main() {
         (WidgetTester tester) async {
       var order = cancelledOrder();
 
-      await tester.pumpWidget(MaterialApp(home: OrderCard(order: order)));
+      await tester.pumpWidget(MaterialApp(
+          home: OrderCard(
+        order: order,
+        firebaseService: MockFirebaseService(),
+      )));
 
       expect(
           find.byType(OrderItemCard), findsNWidgets(order.orderItems.length));

@@ -2,6 +2,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/connected_stateless_widget.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/models/customer_order.dart';
@@ -12,7 +13,11 @@ import 'order_card.dart';
 /// A container for multiple [OrderCard]s.
 ///
 /// The parent widget to hold a list of orders (open or closed).
-class OrdersContainer extends StatelessWidget {
+class OrdersContainer extends ConnectedStatelessWidget {
+  OrdersContainer({
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
+
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
@@ -32,14 +37,18 @@ class OrdersContainer extends StatelessWidget {
       ),
       child: StreamBuilder<List<CustomerOrder>>(
         stream: appState.selectedTab == 'open'
-            ? FirebaseService.getOpenOrders()
-            : FirebaseService.getClosedOrders(),
+            ? this.firebaseService.getOpenOrders()
+            : this.firebaseService.getClosedOrders(),
         builder: (context, snapshot) {
           List<Widget> listViewChildren = [];
 
           if (snapshot.data != null) {
-            listViewChildren =
-                snapshot.data.map((order) => OrderCard(order: order)).toList();
+            listViewChildren = snapshot.data
+                .map((order) => OrderCard(
+                      order: order,
+                      firebaseService: this.firebaseService,
+                    ))
+                .toList();
           }
 
           if (appState.selectedTab == 'open') {

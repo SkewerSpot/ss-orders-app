@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:ss_orders/db/firebase_service.dart';
+import 'package:ss_orders/db/connected_stateless_widget.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/widgets/icon_action_buton.dart';
 
 /// A row of action buttons that act on the given order.
-class OrderControlStrip extends StatelessWidget {
+class OrderControlStrip extends ConnectedStatelessWidget {
+  /// The associated order model object.
   final CustomerOrder order;
 
-  OrderControlStrip({@required this.order});
+  OrderControlStrip({
+    @required this.order,
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +82,9 @@ class OrderControlStrip extends StatelessWidget {
     this.order.isCompleted = !this.order.isCompleted;
     if (this.order.isCompleted) {
       this.order.completedTimestamp = DateTime.now().toUtc().toIso8601String();
-      FirebaseService.closeOrder(this.order);
+      this.firebaseService.closeOrder(this.order);
     } else {
-      FirebaseService.openOrder(this.order);
+      this.firebaseService.openOrder(this.order);
     }
   }
 
@@ -87,15 +92,15 @@ class OrderControlStrip extends StatelessWidget {
     this.order.isCancelled = !this.order.isCancelled;
     if (this.order.isCancelled) {
       this.order.completedTimestamp = DateTime.now().toUtc().toIso8601String();
-      FirebaseService.closeOrder(this.order);
+      this.firebaseService.closeOrder(this.order);
     } else {
-      FirebaseService.openOrder(this.order);
+      this.firebaseService.openOrder(this.order);
     }
   }
 
   void _markOrderAsPaid() {
     this.order.isPaidFor = !this.order.isPaidFor;
-    FirebaseService.updateOpenOrder(this.order);
+    this.firebaseService.updateOpenOrder(this.order);
   }
 
   Future<void> _showDiscountDialog(BuildContext context) async {
@@ -132,7 +137,7 @@ class OrderControlStrip extends StatelessWidget {
                   this.order.isDiscounted = true;
                 else
                   this.order.isDiscounted = false;
-                FirebaseService.updateOpenOrder(this.order);
+                this.firebaseService.updateOpenOrder(this.order);
                 Navigator.of(context).pop();
               },
             ),
@@ -147,7 +152,7 @@ class OrderControlStrip extends StatelessWidget {
       String scannedResult = await scanner.scan();
       if (scannedResult != null && Util.isValidUniqueCode(scannedResult)) {
         this.order.uniqueCode = scannedResult;
-        FirebaseService.updateOpenOrder(this.order);
+        this.firebaseService.updateOpenOrder(this.order);
       }
     } catch (e) {
       return;

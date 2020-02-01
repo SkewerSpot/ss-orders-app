@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/connected_stateful_widget.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
@@ -10,7 +11,7 @@ import 'package:ss_orders/widgets/order_item_card.dart';
 import 'package:ss_orders/widgets/unique_code_card.dart';
 
 /// Visual representation of a [CustomerOrder].
-class OrderCard extends StatefulWidget {
+class OrderCard extends ConnectedStatefulWidget {
   /// The associate order model object.
   final CustomerOrder order;
 
@@ -24,7 +25,8 @@ class OrderCard extends StatefulWidget {
     @required this.order,
     this.showControlStrip = true,
     this.showUniqueCodeInfo = false,
-  });
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -223,7 +225,10 @@ class _OrderCardState extends State<OrderCard> {
                         item: item,
                         isDoneButtonHandler: () {
                           item.isDone = !item.isDone;
-                          FirebaseService.updateOpenOrder(widget.order);
+                          this
+                              .widget
+                              .firebaseService
+                              .updateOpenOrder(widget.order);
                         }),
                   ))
               .toList(),
@@ -231,7 +236,10 @@ class _OrderCardState extends State<OrderCard> {
           /// ACTION BUTTONS
           Visibility(
             visible: this.widget.showControlStrip,
-            child: OrderControlStrip(order: widget.order),
+            child: OrderControlStrip(
+              order: widget.order,
+              firebaseService: this.widget.firebaseService,
+            ),
           ),
         ],
       ),

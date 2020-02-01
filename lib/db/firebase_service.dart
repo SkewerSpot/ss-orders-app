@@ -8,13 +8,13 @@ import 'package:ss_orders/models/customer_order.dart';
 /// Provides static methods to manage tokens and customer orders.
 class FirebaseService {
   /// Private central reference to our realtime database instance.
-  static final _databaseRef = FirebaseDatabase.instance.reference();
+  final _databaseRef = FirebaseDatabase.instance.reference();
 
   /// Returns orders from given path.
   ///
   /// This is a generic method used by `getOpenOrders` and `getClosedOrders`.
-  static Stream<List<CustomerOrder>> getOrders(String path, bool orderByDesc) {
-    return _databaseRef.child(path).onValue.map((event) {
+  Stream<List<CustomerOrder>> getOrders(String path, bool orderByDesc) {
+    return this._databaseRef.child(path).onValue.map((event) {
       List<CustomerOrder> orders = [];
       Map data = event.snapshot.value;
 
@@ -35,16 +35,17 @@ class FirebaseService {
   }
 
   /// Returns open orders for the present day.
-  static Stream<List<CustomerOrder>> getOpenOrders() {
-    return getOrders('open-orders', false);
+  Stream<List<CustomerOrder>> getOpenOrders() {
+    return this.getOrders('open-orders', false);
   }
 
   /// Returns closed orders for the present day,
   /// from the last 2 hours.
-  static Stream<List<CustomerOrder>> getClosedOrders() {
+  Stream<List<CustomerOrder>> getClosedOrders() {
     var now = DateTime.now();
 
-    return getOrders('orders/${Util.getYYYYMMDDDate(now)}', true)
+    return this
+        .getOrders('orders/${Util.getYYYYMMDDDate(now)}', true)
         .map((orders) => orders.where((order) {
               var orderTime = DateTime.parse(order.timestamp);
 
@@ -57,14 +58,15 @@ class FirebaseService {
   /// Replaces an order at its Firebase path with given object.
   ///
   /// Returns true is successful, false otherwise.
-  static Future<bool> updateOpenOrder(CustomerOrder order) async {
+  Future<bool> updateOpenOrder(CustomerOrder order) async {
     try {
-      await _databaseRef
+      await this
+          ._databaseRef
           .child('open-orders/${order.orderId}')
           .set(order.toMap());
       if (!Util.isEmptyOrNull(order.uniqueCode)) {
         var orderDate = DateTime.parse(order.timestamp);
-        await _addUniqueCode(
+        await this._addUniqueCode(
             '${Util.getYYYYMMDDDate(orderDate)}/${order.orderId}',
             order.uniqueCode);
       }
@@ -83,13 +85,14 @@ class FirebaseService {
   /// uncancelled (`isCancelled == false`).
   ///
   /// Returns true if successful, false otherwise.
-  static Future<bool> closeOrder(CustomerOrder order) async {
+  Future<bool> closeOrder(CustomerOrder order) async {
     try {
-      await _databaseRef
+      await this
+          ._databaseRef
           .child(
               'orders/${Util.getYYYYMMDDDate(DateTime.now())}/${order.orderId}')
           .set(order.toMap());
-      await _databaseRef.child('open-orders/${order.orderId}').remove();
+      await this._databaseRef.child('open-orders/${order.orderId}').remove();
       return true;
     } catch (e) {
       return false;
@@ -104,12 +107,14 @@ class FirebaseService {
   /// or uncancel (`isCancelled == false`) an order to make amends.
   ///
   /// Returns true if successful, false otherwise.
-  static Future<bool> openOrder(CustomerOrder order) async {
+  Future<bool> openOrder(CustomerOrder order) async {
     try {
-      await _databaseRef
+      await this
+          ._databaseRef
           .child('open-orders/${order.orderId}')
           .set(order.toMap());
-      await _databaseRef
+      await this
+          ._databaseRef
           .child(
               'orders/${Util.getYYYYMMDDDate(DateTime.now())}/${order.orderId}')
           .remove();
@@ -120,10 +125,10 @@ class FirebaseService {
   }
 
   /// Returns [UniqueCodeMeta] instance for given unique code.
-  static Future<UniqueCodeMeta> getUniqueCodeMeta(String code) async {
+  Future<UniqueCodeMeta> getUniqueCodeMeta(String code) async {
     try {
       var uniqueCodeMetaSnapshot =
-          await _databaseRef.child('/unique-codes/$code').once();
+          await this._databaseRef.child('/unique-codes/$code').once();
       var uniqueCodeMeta = UniqueCodeMeta.fromMap(uniqueCodeMetaSnapshot.value);
       return uniqueCodeMeta;
     } catch (e) {
@@ -132,9 +137,9 @@ class FirebaseService {
   }
 
   /// Returns [CustomerOrder] instance for order at given path.
-  static Future<CustomerOrder> getOrder(String path) async {
+  Future<CustomerOrder> getOrder(String path) async {
     try {
-      var orderSnapshot = await _databaseRef.child('/orders/$path').once();
+      var orderSnapshot = await this._databaseRef.child('/orders/$path').once();
       var order = CustomerOrder.fromMap(orderSnapshot.value);
       return order;
     } catch (e) {
@@ -145,9 +150,9 @@ class FirebaseService {
   /// Replaces a unique code at its Firebase path with given metadata object.
   ///
   /// Returns true is successful, false otherwise.
-  static Future<bool> updateUniqueCode(String code, UniqueCodeMeta meta) async {
+  Future<bool> updateUniqueCode(String code, UniqueCodeMeta meta) async {
     try {
-      await _databaseRef.child('unique-codes/$code').set(meta.toMap());
+      await this._databaseRef.child('unique-codes/$code').set(meta.toMap());
       return true;
     } catch (e) {
       return false;
@@ -160,14 +165,14 @@ class FirebaseService {
   /// in the format "YYYY/MM/DD/<orderId>".
   ///
   /// Returns true if successful, false otherwise.
-  static Future<bool> _addUniqueCode(String orderPath, String code) async {
+  Future<bool> _addUniqueCode(String orderPath, String code) async {
     try {
       var meta = UniqueCodeMeta(
         orderPath: orderPath,
         isRedeemed: false,
         redeemedTimestamp: '',
       );
-      await _databaseRef.child('unique-codes/$code').set(meta.toMap());
+      await this._databaseRef.child('unique-codes/$code').set(meta.toMap());
       return true;
     } catch (e) {
       return false;

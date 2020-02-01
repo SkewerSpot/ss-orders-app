@@ -13,6 +13,7 @@ class ValidateCodeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
+    var firebaseService = FirebaseService();
 
     return Scaffold(
       backgroundColor: kThemeColorYellow,
@@ -30,7 +31,9 @@ class ValidateCodeScreen extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: UniqueCodeInputBox(),
+            child: UniqueCodeInputBox(
+              firebaseService: FirebaseService(),
+            ),
           ),
           SizedBox(
             height: 20.0,
@@ -39,12 +42,13 @@ class ValidateCodeScreen extends StatelessWidget {
             child: FutureBuilder<List<CustomerOrder>>(
               future: Future.wait(
                   appState.uniqueCodesUnderReview.values.map((meta) async {
-                var order = await FirebaseService.getOrder(meta.orderPath);
+                var order = await firebaseService.getOrder(meta.orderPath);
                 return order;
               }).toList()),
               builder: (context, snapshot) {
                 return OrdersContainerAlt(
                   orders: snapshot.data ?? [],
+                  firebaseService: FirebaseService(),
                 );
               },
             ),

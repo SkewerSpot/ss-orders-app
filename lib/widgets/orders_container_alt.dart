@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/connected_stateless_widget.dart';
+import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/no_orders_placeholder.dart';
 
@@ -13,10 +15,13 @@ import 'order_card.dart';
 /// Also, unlike [OrdersContainer] that manages list of orders internally
 /// this widget asks for [List] of [CustomerOrder] object in its constructor,
 /// making it a more flexible and reusable alternative.
-class OrdersContainerAlt extends StatelessWidget {
+class OrdersContainerAlt extends ConnectedStatelessWidget {
   final List<CustomerOrder> orders;
 
-  OrdersContainerAlt({@required this.orders});
+  OrdersContainerAlt({
+    @required this.orders,
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +41,7 @@ class OrdersContainerAlt extends StatelessWidget {
                     ),
               showControlStrip: false,
               showUniqueCodeInfo: true,
+              firebaseService: this.firebaseService,
             ))
         .toList();
 

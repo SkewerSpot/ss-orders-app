@@ -6,6 +6,7 @@ class AppState extends ChangeNotifier {
   String _selectedTab = '';
   int _openOrdersCount = 0;
   Map<String, UniqueCodeMeta> _uniqueCodesUnderReview = {};
+  FirebaseService _firebaseService = FirebaseService();
 
   /// Getter for selectedTab state.
   String get selectedTab {
@@ -63,7 +64,7 @@ class AppState extends ChangeNotifier {
           !oldMeta.isRedeemed ? DateTime.now().toUtc().toIso8601String() : '',
     );
 
-    var didUpdate = await FirebaseService.updateUniqueCode(code, newMeta);
+    var didUpdate = await this._firebaseService.updateUniqueCode(code, newMeta);
 
     if (didUpdate) {
       this._uniqueCodesUnderReview[code] = newMeta;

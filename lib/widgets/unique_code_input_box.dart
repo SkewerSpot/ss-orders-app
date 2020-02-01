@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ss_orders/db/connected_stateless_widget.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/models/app_state.dart';
 import 'package:ss_orders/util.dart';
@@ -7,7 +8,11 @@ import 'package:ss_orders/widgets/text_tag.dart';
 
 /// A widget that allows to enter unique codes,
 /// and keeps track of all valid entered codes.
-class UniqueCodeInputBox extends StatelessWidget {
+class UniqueCodeInputBox extends ConnectedStatelessWidget {
+  UniqueCodeInputBox({
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
+
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context);
@@ -38,7 +43,7 @@ class UniqueCodeInputBox extends StatelessWidget {
               var potentialCode = text.trim();
               if (Util.isValidUniqueCode(potentialCode)) {
                 var meta =
-                    await FirebaseService.getUniqueCodeMeta(potentialCode);
+                    await this.firebaseService.getUniqueCodeMeta(potentialCode);
 
                 if (meta == null) {
                   return this._showDialog(context, 'Error',
