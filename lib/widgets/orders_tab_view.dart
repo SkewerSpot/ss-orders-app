@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/widgets/orders_container.dart';
 import 'package:ss_orders/widgets/tab_button.dart';
 
@@ -34,7 +35,9 @@ class OrdersTabView extends StatelessWidget {
                       .toList()),
             ),
             Expanded(
-              child: OrdersContainer(),
+              child: OrdersContainer(
+                firebaseService: FirebaseService(),
+              ),
             ),
           ],
         ),

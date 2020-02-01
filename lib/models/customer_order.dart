@@ -209,6 +209,8 @@ class CustomerOrder {
   /// Returns the sum total of prices of all items in the order.
   /// Total value may be less than sum if order is inclusive of taxes.
   double totalCost() {
+    if (this.orderItems.length < 1) return 0.0;
+
     double total = this
         .orderItems
         .map<double>((item) => item.price)

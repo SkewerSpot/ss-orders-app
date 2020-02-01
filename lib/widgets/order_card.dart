@@ -2,17 +2,31 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ss_orders/constants.dart';
+import 'package:ss_orders/db/connected_stateful_widget.dart';
 import 'package:ss_orders/db/firebase_service.dart';
 import 'package:ss_orders/util.dart';
 import 'package:ss_orders/models/customer_order.dart';
 import 'package:ss_orders/widgets/order_control_strip.dart';
 import 'package:ss_orders/widgets/order_item_card.dart';
+import 'package:ss_orders/widgets/unique_code_card.dart';
 
 /// Visual representation of a [CustomerOrder].
-class OrderCard extends StatefulWidget {
+class OrderCard extends ConnectedStatefulWidget {
+  /// The associate order model object.
   final CustomerOrder order;
 
-  OrderCard({@required this.order});
+  /// Whether to display action buttons to manage order.
+  final bool showControlStrip;
+
+  /// Whether to display associated unique code information.
+  final bool showUniqueCodeInfo;
+
+  OrderCard({
+    @required this.order,
+    this.showControlStrip = true,
+    this.showUniqueCodeInfo = false,
+    @required FirebaseService firebaseService,
+  }) : super(firebaseService: firebaseService);
 
   @override
   _OrderCardState createState() => _OrderCardState();
@@ -78,7 +92,21 @@ class _OrderCardState extends State<OrderCard> {
                   : Text('${this._minsAgo}m ago'),
             ],
           ),
+
           SizedBox(height: 5.0),
+
+          /// UNIQUE CODE
+          Visibility(
+            visible: this.widget.showUniqueCodeInfo &&
+                !Util.isEmptyOrNull(this.widget.order.uniqueCode),
+            child: UniqueCodeCard(
+              code: this.widget.order.uniqueCode,
+              attachedAt: DateTime.parse(this.widget.order.timestamp),
+            ),
+          ),
+
+          SizedBox(height: 5.0),
+
           // META DATA
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -188,6 +216,7 @@ class _OrderCardState extends State<OrderCard> {
               ),
             ),
           ),
+
           // ITEMS
           ...widget.order.orderItems
               .map((item) => Padding(
@@ -196,13 +225,22 @@ class _OrderCardState extends State<OrderCard> {
                         item: item,
                         isDoneButtonHandler: () {
                           item.isDone = !item.isDone;
-                          FirebaseService.updateOpenOrder(widget.order);
+                          this
+                              .widget
+                              .firebaseService
+                              .updateOpenOrder(widget.order);
                         }),
                   ))
               .toList(),
 
           /// ACTION BUTTONS
-          OrderControlStrip(order: widget.order),
+          Visibility(
+            visible: this.widget.showControlStrip,
+            child: OrderControlStrip(
+              order: widget.order,
+              firebaseService: this.widget.firebaseService,
+            ),
+          ),
         ],
       ),
     );
