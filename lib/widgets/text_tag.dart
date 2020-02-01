@@ -34,19 +34,25 @@ class TextTag extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          Text(
-            this.text,
-            style: TextStyle(
-              color: kThemeColorWhite,
+          Expanded(
+            flex: 2,
+            child: Text(
+              this.text,
+              style: TextStyle(
+                color: kThemeColorWhite,
+              ),
             ),
           ),
-          GestureDetector(
-            child: Icon(
-              Icons.cancel,
-              color: kThemeColorWhite,
-              size: 16.0,
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              child: Icon(
+                Icons.cancel,
+                color: kThemeColorWhite,
+                size: 16.0,
+              ),
+              onTap: this.onCancelPressed,
             ),
-            onTap: this.onCancelPressed,
           )
         ],
       ),
